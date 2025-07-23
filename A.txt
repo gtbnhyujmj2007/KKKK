@@ -1,0 +1,75 @@
+https://ithelp.ithome.com.tw/m/articles/1029533
+
+裡面的金鑰 不要用環境變數的模式 要用config模式 副檔名好像是.ini，解釋一下工程師明示了甚麼，以及要怎麼做?
+
+
+ChatGPT 說：
+這篇文章提到的「金鑰管理方式改成 .ini 檔的 config 模式」，主要是針對 API 金鑰或敏感設定參數的管理方式進行改良與抽離，取代硬編碼或環境變數（.env）方式。這種方式常見於 Python 工程，使用 configparser 讀取 .ini 格式的設定檔。
+
+🔍 原文重點（明示內容）
+原文的重點是：
+
+🔒 安全性與維護性：金鑰不要寫死在程式碼中，也盡量不要硬依賴環境變數。改成 .ini 格式獨立管理設定。
+
+📁 可讀性與分層結構：.ini 文件格式簡潔清楚，適合組織管理多個設定（如 API、資料庫、Log 等）
+
+🔧 使用 configparser：透過標準套件 configparser 可輕鬆解析 .ini 檔，載入金鑰與設定。
+
+✅ 如何實作（以 Python 為例）
+步驟一：建立 .ini 檔案
+例如建立一個叫做 config.ini 的檔案：
+
+ini
+複製
+編輯
+[bingx]
+api_key = your_api_key_here
+secret_key = your_secret_key_here
+
+[database]
+host = localhost
+port = 5432
+步驟二：撰寫 Python 程式讀取設定
+python
+複製
+編輯
+import configparser
+
+# 建立 configparser 實例
+config = configparser.ConfigParser()
+
+# 讀取 ini 檔
+config.read('config.ini')
+
+# 存取金鑰
+api_key = config['bingx']['api_key']
+secret_key = config['bingx']['secret_key']
+
+print("API Key:", api_key)
+✅ 補充優點
+.ini 檔案可以 不放進 Git（加入 .gitignore），保護敏感資訊
+
+可以針對不同環境（開發、測試、正式）設計多個設定檔
+
+比環境變數更直觀易讀，適合多人團隊協作
+
+🔄 和 .env 的差異比較
+項目	.env（環境變數）	.ini + configparser
+讀取方式	os.getenv() 或 dotenv	configparser
+可讀性	一般	較高（分段明確）
+適合複雜設定	不太適合	適合多組設定（分區塊）
+跨平台支援	依賴 shell 支援	原生支援
+預設 Python 套件支援	否，需要 python-dotenv	是，標準庫 configparser
+
+✅ 小結：工程師明示的做法
+你應該：
+
+不要將金鑰寫在程式碼中或 .env 中
+
+改用 .ini 檔，搭配 configparser 模組
+
+使用結構清晰的 [section] 來分類金鑰或參數
+
+把 config.ini 加入 .gitignore，避免上傳到 GitHub
+
+如果你有特定的程式要改用 .ini 管理方式，我也可以幫你修改範例。需要的話直接貼程式碼給我即可。
